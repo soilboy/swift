@@ -1640,6 +1640,9 @@ function common_cross_c_flags() {
         android-arm64)
             echo -n " -arch aarch64"
             ;;
+        wasm-wasm32)
+            echo -n " -arch wasm32"
+            ;;
     esac
 }
 
