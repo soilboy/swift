@@ -140,7 +140,7 @@ struct _RuntimeFunctionCounters {
   /// Get the number of different runtime functions whose calls are being
   /// tracked.
   @_silgen_name("_swift_getNumRuntimeFunctionCounters")
-  public static func getNumRuntimeFunctionCounters() -> Int
+  public static func getNumRuntimeFunctionCounters() -> UInt64
 
   /// Dump all per-object runtime function counters.
   @_silgen_name("_swift_dumpObjectsRuntimeFunctionPointers")
