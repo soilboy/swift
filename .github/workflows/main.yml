@@ -17,7 +17,7 @@ jobs:
     
     steps:
       - name: Debug
-        run: pwd && ls
+        run: pwd && ls /home/builder/source/swift/
       - name: Build Linux installable archive
         run: ./utils/webassembly/ci-linux.sh
       - name: Upload Linux installable archive
