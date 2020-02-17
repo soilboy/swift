@@ -16,6 +16,8 @@ jobs:
       image: maxdesiatov/swiftwasm-builder:maxd-prebuilt-llvm-clang
     
     steps:
+      - name: Debug
+        run: pwd && ls
       - name: Build Linux installable archive
         run: ./utils/webassembly/ci-linux.sh
       - name: Upload Linux installable archive
