@@ -20,7 +20,7 @@ jobs:
         run: |
             cd /home/builder/source/swift/
             git fetch
-            git checkout $GITHUB_REF
+            git checkout $GITHUB_HEAD_REF
             ./utils/webassembly/build-linux.sh --release --debug-swift-stdlib --verbose -t || true
       - name: Upload Linux installable archive
         uses: actions/upload-artifact@v1
