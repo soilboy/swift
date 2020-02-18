@@ -17,7 +17,11 @@ jobs:
     
     steps:
       - name: Build Linux installable archive
-        run: cd /home/builder/source/swift/ && ./build.sh $GITHUB_SHA
+        run: |
+            cd /home/builder/source/swift/
+            git fetch
+            git checkout $GITHUB_REF
+            ./utils/webassembly/build-linux.sh --release --debug-swift-stdlib --verbose -t || true
       - name: Upload Linux installable archive
         uses: actions/upload-artifact@v1
         with:
