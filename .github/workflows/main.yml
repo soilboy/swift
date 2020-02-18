@@ -17,7 +17,7 @@ jobs:
     
     steps:
       - name: Build Linux installable archive
-        run: cd /home/builder/source/swift/ && chmod +x build.sh && ./build.sh $GITHUB_SHA
+        run: cd /home/builder/source/swift/ && ./build.sh $GITHUB_SHA
       - name: Upload Linux installable archive
         uses: actions/upload-artifact@v1
         with:
