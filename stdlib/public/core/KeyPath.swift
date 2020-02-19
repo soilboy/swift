@@ -2543,9 +2543,13 @@ internal protocol KeyPathPatternVisitor {
 
 internal func _resolveRelativeAddress(_ base: UnsafeRawPointer,
                                       _ offset: Int32) -> UnsafeRawPointer {
+  #if arch(wasm32)
+  return UnsafeRawPointer(bitPattern: Int(offset)).unsafelyUnwrapped
+  #else
   // Sign-extend the offset to pointer width and add with wrap on overflow.
   return UnsafeRawPointer(bitPattern: Int(bitPattern: base) &+ Int(offset))
     .unsafelyUnwrapped
+  #endif
 }
 internal func _resolveRelativeIndirectableAddress(_ base: UnsafeRawPointer,
                                                   _ offset: Int32)
