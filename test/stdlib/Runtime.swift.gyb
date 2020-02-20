@@ -591,6 +591,8 @@ Runtime.test("Struct layout with reference storage types") {
   print(malkovich)
 }
 
+// WebAssembly/WASI doesn't support dynamic symbol lookup
+#if !os(WASI)
 Runtime.test("SwiftError layout constants for LLDB") {
   let offsetof_SwiftError_typeMetadata = pointerToSwiftCoreSymbol(name: "_swift_lldb_offsetof_SwiftError_typeMetadata")!
   let sizeof_SwiftError = pointerToSwiftCoreSymbol(name: "_swift_lldb_sizeof_SwiftError")!
@@ -606,10 +608,10 @@ Runtime.test("SwiftError layout constants for LLDB") {
 #elseif os(Linux) || os(Android) || os(Windows)
   expectEqual(16, offsetof_SwiftError_typeMetadata.load(as: UInt.self))
   expectEqual(32, sizeof_SwiftError.load(as: UInt.self))
-#else
   _UnimplementedError()
 #endif
 }
+#endif
 
 var Reflection = TestSuite("Reflection")
 
