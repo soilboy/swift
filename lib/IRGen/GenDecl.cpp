@@ -2910,6 +2910,9 @@ IRGenModule::getAddrOfLLVMVariableOrGOTEquivalent(LinkEntity entity) {
     return {gotEquivalent, ConstantReference::Indirect};
   };
   
+  if (TargetInfo.OutputObjectFormat == llvm::Triple::Wasm) {
+    return direct();
+  }
   // The integrated REPL incrementally adds new definitions, so always use
   // indirect references in this mode.
   if (IRGen.Opts.IntegratedREPL)
