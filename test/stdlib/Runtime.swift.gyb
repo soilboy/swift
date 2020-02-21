@@ -608,6 +608,7 @@ Runtime.test("SwiftError layout constants for LLDB") {
 #elseif os(Linux) || os(Android) || os(Windows)
   expectEqual(16, offsetof_SwiftError_typeMetadata.load(as: UInt.self))
   expectEqual(32, sizeof_SwiftError.load(as: UInt.self))
+#else
   _UnimplementedError()
 #endif
 }
