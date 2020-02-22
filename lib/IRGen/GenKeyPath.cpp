@@ -141,11 +141,11 @@ getAccessorForComputedComponent(IRGenModule &IGM,
   switch (whichAccessor) {
   case Getter:
     thunkName = "keypath_get";
-    numArgsToForward = 2;
+    numArgsToForward = 4;
     break;
   case Setter:
     thunkName = "keypath_set";
-    numArgsToForward = 2;
+    numArgsToForward = 4;
     break;
   case Equals:
     thunkName = "keypath_equals";
