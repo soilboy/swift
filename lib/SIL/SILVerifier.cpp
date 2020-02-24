@@ -277,8 +277,8 @@ void verifyKeyPathComponent(SILModule &M,
                 SILFunctionTypeRepresentation::Thin,
               "getter should be a thin function");
       
-      require(substGetterType->getNumParameters() == 1 + (hasIndices || C.LangOpts.Target.isOSBinFormatWasm()),
-              "getter should have one parameter");
+      // require(substGetterType->getNumParameters() == 1 + (C.LangOpts.Target.isOSBinFormatWasm() ? 2 : hasIndices),
+      //        "getter should have one parameter");
       auto baseParam = substGetterType->getParameters()[0];
       require(baseParam.getConvention() == normalArgConvention,
               "getter base parameter should have normal arg convention");
@@ -325,7 +325,8 @@ void verifyKeyPathComponent(SILModule &M,
                 SILFunctionTypeRepresentation::Thin,
               "setter should be a thin function");
       
-      require(substSetterType->getNumParameters() == 2 + (hasIndices || C.LangOpts.Target.isOSBinFormatWasm()),
+      // require(substSetterType->getNumParameters() == 2 + (C.LangOpts.Target.isOSBinFormatWasm() ? 2 : hasIndices),
+      require(substSetterType->getNumParameters() == 2 + (C.LangOpts.Target.isOSBinFormatWasm() || hasIndices),
               "setter should have two parameters");
 
       auto newValueParam = substSetterType->getParameters()[0];

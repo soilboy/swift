@@ -2680,6 +2680,8 @@ static SILFunction *getOrCreateKeyPathGetter(SILGenModule &SGM,
     }
   }
 
+  auto &C = SGM.getASTContext();
+
   auto genericSig =
       genericEnv ? genericEnv->getGenericSignature().getCanonicalSignature()
                  : nullptr;
@@ -2699,13 +2701,17 @@ static SILFunction *getOrCreateKeyPathGetter(SILGenModule &SGM,
   
   auto paramConvention = ParameterConvention::Indirect_In_Guaranteed;
 
-  SmallVector<SILParameterInfo, 2> params;
+  SmallVector<SILParameterInfo, 3> params;
   params.push_back({loweredBaseTy, paramConvention});
-  auto &C = SGM.getASTContext();
   if (!indexes.empty() || C.LangOpts.Target.isOSBinFormatWasm())
     params.push_back({C.getUnsafeRawPointerDecl()->getDeclaredType()
                                                  ->getCanonicalType(),
                       ParameterConvention::Direct_Unowned});
+
+  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+    // hack
+    params.push_back({loweredBaseTy, paramConvention});
+  }
   
   SILResultInfo result(loweredPropTy, ResultConvention::Indirect);
   
@@ -2754,6 +2760,11 @@ static SILFunction *getOrCreateKeyPathGetter(SILGenModule &SGM,
   if (!indexes.empty() || C.LangOpts.Target.isOSBinFormatWasm()) {
     auto indexArgTy = params[1].getSILStorageType(SGM.M, signature);
     indexPtrArg = entry->createFunctionArgument(indexArgTy);
+  }
+
+  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+    auto dummyArgTy = params[2].getSILStorageType(SGM.M, signature);
+    entry->createFunctionArgument(dummyArgTy);
   }
   
   ArgumentScope scope(subSGF, loc);

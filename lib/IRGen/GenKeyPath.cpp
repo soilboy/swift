@@ -141,11 +141,11 @@ getAccessorForComputedComponent(IRGenModule &IGM,
   switch (whichAccessor) {
   case Getter:
     thunkName = "keypath_get";
-    numArgsToForward = 4;
+    numArgsToForward = 2;
     break;
   case Setter:
     thunkName = "keypath_set";
-    numArgsToForward = 4;
+    numArgsToForward = 2;
     break;
   case Equals:
     thunkName = "keypath_equals";
@@ -222,7 +222,7 @@ getAccessorForComputedComponent(IRGenModule &IGM,
       componentArgsBuf = params.claimNext();
       // Pass the argument pointer down to the underlying function, if it
       // wants it.
-      if (hasSubscriptIndices) {
+      if (hasSubscriptIndices || IGM.TargetInfo.OutputObjectFormat == llvm::Triple::Wasm) {
         forwardedArgs.add(componentArgsBuf);
       }
       break;
