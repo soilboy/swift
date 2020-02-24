@@ -124,57 +124,57 @@ struct TestComputed: P {
   }
 }
 
-// extension P {
-//   var readonlyProtoExt: Self { return self }
-//   var mutatingProtoExt: Self {
-//     get { return self }
-//     set { self = newValue }
-//   }
-// }
+extension P {
+  var readonlyProtoExt: Self { return self }
+  var mutatingProtoExt: Self {
+    get { return self }
+    set { self = newValue }
+  }
+}
  
 // keyPath.test("computed properties") {
    var test = TestComputed()
  
-   // do {
+   do {
      let tc_readonly = \TestComputed.readonly
      expectTrue(test[keyPath: tc_readonly] !== test[keyPath: tc_readonly])
-     // expectEqual(test[keyPath: tc_readonly].value,
-     //             test[keyPath: tc_readonly].value)
-   // }
-// 
-//   do {
-//     let tc_nonmutating = \TestComputed.nonmutating
-//     expectTrue(test[keyPath: tc_nonmutating] !== test[keyPath: tc_nonmutating])
-//     expectEqual(test[keyPath: tc_nonmutating].value,
-//                 test[keyPath: tc_nonmutating].value)
-//     TestComputed.resetCounts()
-//     test[keyPath: tc_nonmutating] = LifetimeTracked(4)
-//     expectEqual(TestComputed.numNonmutatingSets, 1)
-//   }
-// 
-//   do {
-//     let tc_mutating = \TestComputed.mutating
-//     expectTrue(test[keyPath: tc_mutating] !== test[keyPath: tc_mutating])
-//     expectEqual(test[keyPath: tc_mutating].value,
-//                 test[keyPath: tc_mutating].value)
-//     let newObject = LifetimeTracked(5)
-//     test[keyPath: tc_mutating] = newObject
-//     expectTrue(test.canary === newObject)
-//   }
-// 
-//   do {
-//     let tc_readonlyProtoExt = \TestComputed.readonlyProtoExt
-//     expectTrue(test.canary === test[keyPath: tc_readonlyProtoExt].canary)
-//   }
-// 
-//   do {
-//     let tc_mutatingProtoExt = \TestComputed.mutatingProtoExt
-//     expectTrue(test.canary === test[keyPath: tc_mutatingProtoExt].canary)
-//     let oldTest = test
-//     test[keyPath: tc_mutatingProtoExt] = TestComputed()
-//     expectTrue(oldTest.canary !== test.canary)
-//     expectTrue(test.canary === test[keyPath: tc_mutatingProtoExt].canary)
-//   }
+     expectEqual(test[keyPath: tc_readonly].value,
+                 test[keyPath: tc_readonly].value)
+   }
+ 
+   do {
+     let tc_nonmutating = \TestComputed.nonmutating
+     expectTrue(test[keyPath: tc_nonmutating] !== test[keyPath: tc_nonmutating])
+     expectEqual(test[keyPath: tc_nonmutating].value,
+                 test[keyPath: tc_nonmutating].value)
+     TestComputed.resetCounts()
+     test[keyPath: tc_nonmutating] = LifetimeTracked(4)
+     expectEqual(TestComputed.numNonmutatingSets, 1)
+   }
+ 
+   do {
+     let tc_mutating = \TestComputed.mutating
+     expectTrue(test[keyPath: tc_mutating] !== test[keyPath: tc_mutating])
+     expectEqual(test[keyPath: tc_mutating].value,
+                 test[keyPath: tc_mutating].value)
+     let newObject = LifetimeTracked(5)
+     test[keyPath: tc_mutating] = newObject
+     expectTrue(test.canary === newObject)
+   }
+ 
+   do {
+     let tc_readonlyProtoExt = \TestComputed.readonlyProtoExt
+     expectTrue(test.canary === test[keyPath: tc_readonlyProtoExt].canary)
+   }
+ 
+   do {
+     let tc_mutatingProtoExt = \TestComputed.mutatingProtoExt
+     expectTrue(test.canary === test[keyPath: tc_mutatingProtoExt].canary)
+     let oldTest = test
+     test[keyPath: tc_mutatingProtoExt] = TestComputed()
+     expectTrue(oldTest.canary !== test.canary)
+     expectTrue(test.canary === test[keyPath: tc_mutatingProtoExt].canary)
+   }
 // }
 // 
 // class AB {

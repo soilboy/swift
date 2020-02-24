@@ -326,8 +326,7 @@ void verifyKeyPathComponent(SILModule &M,
               "setter should be a thin function");
       
       // require(substSetterType->getNumParameters() == 2 + (C.LangOpts.Target.isOSBinFormatWasm() ? 2 : hasIndices),
-      require(substSetterType->getNumParameters() == 2 + (C.LangOpts.Target.isOSBinFormatWasm() || hasIndices),
-              "setter should have two parameters");
+      //        "setter should have two parameters");
 
       auto newValueParam = substSetterType->getParameters()[0];
       // TODO: This should probably be unconditionally +1 when we

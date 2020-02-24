@@ -2846,7 +2846,7 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
   
   auto paramConvention = ParameterConvention::Indirect_In_Guaranteed;
 
-  SmallVector<SILParameterInfo, 3> params;
+  SmallVector<SILParameterInfo, 4> params;
   // property value
   params.push_back({loweredPropTy, paramConvention});
   // base
@@ -2859,6 +2859,11 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
     params.push_back({C.getUnsafeRawPointerDecl()->getDeclaredType()
                                                  ->getCanonicalType(),
                       ParameterConvention::Direct_Unowned});
+
+  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+    // hack
+    params.push_back({loweredBaseTy, paramConvention});
+  }
   
   auto signature = SILFunctionType::get(genericSig,
     SILFunctionType::ExtInfo::getThin(),
@@ -2907,6 +2912,11 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
   if (!indexes.empty() || C.LangOpts.Target.isOSBinFormatWasm()) {
     auto indexArgTy = params[2].getSILStorageType(SGM.M, signature);
     indexPtrArg = entry->createFunctionArgument(indexArgTy);
+  }
+
+  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+    auto dummyArgTy = params[3].getSILStorageType(SGM.M, signature);
+    entry->createFunctionArgument(dummyArgTy);
   }
 
   Scope scope(subSGF, loc);
