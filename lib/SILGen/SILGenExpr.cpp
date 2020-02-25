@@ -3035,12 +3035,17 @@ getOrCreateKeyPathEqualsAndHash(SILGenModule &SGM,
   [unsafeRawPointerTy, boolTy, genericSig, &C, &indexTypes, &equals, loc,
    &SGM, genericEnv, expansion, indexLoweredTy, indexes]{
     // (RawPointer, RawPointer) -> Bool
-    SmallVector<SILParameterInfo, 2> params;
+    SmallVector<SILParameterInfo, 3> params;
     params.push_back({unsafeRawPointerTy,
                       ParameterConvention::Direct_Unowned});
     params.push_back({unsafeRawPointerTy,
                       ParameterConvention::Direct_Unowned});
     
+    if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+      // hack
+      params.push_back({unsafeRawPointerTy, ParameterConvention::Direct_Unowned});
+    }
+
     SmallVector<SILResultInfo, 1> results;
     results.push_back({boolTy, ResultConvention::Unowned});
     
@@ -3073,6 +3078,11 @@ getOrCreateKeyPathEqualsAndHash(SILGenModule &SGM,
       entry->createFunctionArgument(params[0].getSILStorageType(SGM.M, signature));
     auto rhsPtr =
       entry->createFunctionArgument(params[1].getSILStorageType(SGM.M, signature));
+
+    if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+      auto dummyArgTy = params[2].getSILStorageType(SGM.M, signature);
+      entry->createFunctionArgument(dummyArgTy);
+    }
 
     Scope scope(subSGF, loc);
 
@@ -3217,7 +3227,12 @@ getOrCreateKeyPathEqualsAndHash(SILGenModule &SGM,
     
     SmallVector<SILResultInfo, 1> results;
     results.push_back({intTy, ResultConvention::Unowned});
-    
+
+    if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+      // hack
+      params.push_back({unsafeRawPointerTy, ParameterConvention::Direct_Unowned});
+    }
+
     auto signature = SILFunctionType::get(genericSig,
       SILFunctionType::ExtInfo::getThin(),
       SILCoroutineKind::None,
@@ -3246,6 +3261,11 @@ getOrCreateKeyPathEqualsAndHash(SILGenModule &SGM,
     auto entry = hash->begin();
     auto indexPtr = entry->createFunctionArgument(
                                 params[0].getSILStorageType(SGM.M, signature));
+
+    if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+      auto dummyArgTy = params[1].getSILStorageType(SGM.M, signature);
+      entry->createFunctionArgument(dummyArgTy);
+    }
 
     SILValue hashCode;
 

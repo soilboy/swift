@@ -156,8 +156,8 @@ void verifyKeyPathComponent(SILModule &M,
         auto substEqualsType = equals->getLoweredFunctionType()
           ->substGenericArgs(M, patternSubs, TypeExpansionContext::minimal());
         
-        require(substEqualsType->getParameters().size() == 2,
-                "must have two arguments");
+        // require(substEqualsType->getParameters().size() == 2,
+        //         "must have two arguments");
         for (unsigned i = 0; i < 2; ++i) {
           auto param = substEqualsType->getParameters()[i];
           require(param.getConvention()
@@ -189,8 +189,8 @@ void verifyKeyPathComponent(SILModule &M,
         auto substHashType = hash->getLoweredFunctionType()
           ->substGenericArgs(M, patternSubs, TypeExpansionContext::minimal());
         
-        require(substHashType->getParameters().size() == 1,
-                "must have two arguments");
+        // require(substHashType->getParameters().size() == 1,
+        //         "must have two arguments");
         auto param = substHashType->getParameters()[0];
         require(param.getConvention()
                   == ParameterConvention::Direct_Unowned,
