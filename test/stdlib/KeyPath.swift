@@ -8,73 +8,73 @@ import StdlibUnittest
 
 // var keyPath = TestSuite("key paths")
 
-final class C<T> {
-  var x: Int
-  var y: LifetimeTracked?
-  var z: T
-  let immutable: String
-  private(set) var secretlyMutable: String
-
-  var computed: T {
-    get {
-      return z
-    }
-    set {
-      z = newValue
-    }
-  }
-
-  init(x: Int, y: LifetimeTracked?, z: T) {
-    self.x = x
-    self.y = y
-    self.z = z
-    self.immutable = "\(x) \(y) \(z)"
-    self.secretlyMutable = immutable
-  }
-}
-
-struct Point: Equatable {
-  var x: Double
-  var y: Double
-  var trackLifetime = LifetimeTracked(123)
-  let hypotenuse: Double
-  private(set) var secretlyMutableHypotenuse: Double
-  
-  init(x: Double, y: Double) {
-    self.x = x
-    self.y = y
-    hypotenuse = x*x + y*y
-    secretlyMutableHypotenuse = x*x + y*y
-  }
-  
-  static func ==(a: Point, b: Point) -> Bool {
-    return a.x == b.x && a.y == b.y
-  }
-}
-
-struct S<T: Equatable>: Equatable {
-  var x: Int
-  var y: LifetimeTracked?
-  var z: T
-  var p: Point
-  var c: C<T>
-  
-  static func ==(a: S, b: S) -> Bool {
-    return a.x == b.x
-      && a.y === b.y
-      && a.z == b.z
-      && a.p == b.p
-      && a.c === b.c
-  }
-}
+// final class C<T> {
+//   var x: Int
+//   var y: LifetimeTracked?
+//   var z: T
+//   let immutable: String
+//   private(set) var secretlyMutable: String
+// 
+//   var computed: T {
+//     get {
+//       return z
+//     }
+//     set {
+//       z = newValue
+//     }
+//   }
+// 
+//   init(x: Int, y: LifetimeTracked?, z: T) {
+//     self.x = x
+//     self.y = y
+//     self.z = z
+//     self.immutable = "\(x) \(y) \(z)"
+//     self.secretlyMutable = immutable
+//   }
+// }
+// 
+// struct Point: Equatable {
+//   var x: Double
+//   var y: Double
+//   var trackLifetime = LifetimeTracked(123)
+//   let hypotenuse: Double
+//   private(set) var secretlyMutableHypotenuse: Double
+//   
+//   init(x: Double, y: Double) {
+//     self.x = x
+//     self.y = y
+//     hypotenuse = x*x + y*y
+//     secretlyMutableHypotenuse = x*x + y*y
+//   }
+//   
+//   static func ==(a: Point, b: Point) -> Bool {
+//     return a.x == b.x && a.y == b.y
+//   }
+// }
+// 
+// struct S<T: Equatable>: Equatable {
+//   var x: Int
+//   var y: LifetimeTracked?
+//   var z: T
+//   var p: Point
+//   var c: C<T>
+//   
+//   static func ==(a: S, b: S) -> Bool {
+//     return a.x == b.x
+//       && a.y === b.y
+//       && a.z == b.z
+//       && a.p == b.p
+//       && a.c === b.c
+//   }
+// }
 
 final class ComputedA {
   var readOnly: ComputedB { fatalError() }
-  var nonmutating: ComputedB {
-    get { fatalError() }
-    set { fatalError() }
-  }
-  var reabstracted: () -> () = {}
+  // var nonmutating: ComputedB {
+  //   get { fatalError() }
+  //   set { fatalError() }
+  // }
+  // var reabstracted: () -> () = {}
 }
 
 struct ComputedB {
@@ -83,97 +83,100 @@ struct ComputedB {
     get { fatalError() }
     set { fatalError() }
   }
-  var nonmutating: ComputedA {
-    get { fatalError() }
-    nonmutating set { fatalError() }
-  }
-  var reabstracted: () -> () = {}
+  // var nonmutating: ComputedA {
+  //   get { fatalError() }
+  //   nonmutating set { fatalError() }
+  // }
+  // var reabstracted: () -> () = {}
 }
 
-typealias Tuple<T: Equatable, U> = (S<T>, C<U>)
+// typealias Tuple<T: Equatable, U> = (S<T>, C<U>)
 
 // keyPath.test("key path in-place instantiation") {
 //   for _ in 1...2 {
-//     let s_x = (\S<Int>.x as AnyKeyPath) as! WritableKeyPath<S<Int>, Int>
-//     let s_y = (\S<Int>.y as AnyKeyPath) as! WritableKeyPath<S<Int>, LifetimeTracked?>
-//     let s_z = (\S<Int>.z as AnyKeyPath) as! WritableKeyPath<S<Int>, Int>
-//     let s_p = (\S<Int>.p as AnyKeyPath) as! WritableKeyPath<S<Int>, Point>
-//     let s_p_x = (\S<Int>.p.x as AnyKeyPath) as! WritableKeyPath<S<Int>, Double>
-//     let s_p_y = (\S<Int>.p.y as AnyKeyPath) as! WritableKeyPath<S<Int>, Double>
-//     let s_c = (\S<Int>.c as AnyKeyPath) as! WritableKeyPath<S<Int>, C<Int>>
-//     let s_c_x = (\S<Int>.c.x as AnyKeyPath) as! ReferenceWritableKeyPath<S<Int>, Int>
-// 
-//     let t_0s = (\Tuple<Int, Int>.0 as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, S<Int>>
-//     let t_1c = (\Tuple<Int, Int>.1 as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, C<Int>>
-//     let t_0s_x = (\Tuple<Int, Int>.0.x as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, Int>
-//     let t_0s_p_hypotenuse = (\Tuple<Int, Int>.0.p.hypotenuse as AnyKeyPath) as! KeyPath<Tuple<Int, Int>, Double>
-//     let t_1c_x = (\Tuple<Int, Int>.1.x as AnyKeyPath) as! ReferenceWritableKeyPath<Tuple<Int, Int>, Int>
-//     let t_1c_immutable = (\Tuple<Int, Int>.1.immutable as AnyKeyPath) as! KeyPath<Tuple<Int, Int>, String>
-// 
-//     let c_x = (\C<Int>.x as AnyKeyPath) as! ReferenceWritableKeyPath<C<Int>, Int>
-//     let s_c_x_2 = s_c.appending(path: c_x)
-// 
-//     expectEqual(s_c_x, s_c_x_2)
-//     expectEqual(s_c_x_2, s_c_x)
-//     expectEqual(s_c_x.hashValue, s_c_x_2.hashValue)
-// 
-//     let t_1c_x_2 = t_1c.appending(path: c_x)
-// 
-//     expectEqual(t_1c_x, t_1c_x_2)
-//     expectEqual(t_1c_x_2, t_1c_x)
-//     expectEqual(t_1c_x.hashValue, t_1c_x_2.hashValue)
-// 
-//     let point_x = (\Point.x as AnyKeyPath) as! WritableKeyPath<Point, Double>
-//     let point_y = (\Point.y as AnyKeyPath) as! WritableKeyPath<Point, Double>
-// 
-//     let s_p_x_2 = s_p.appending(path: point_x)
-//     let s_p_y_2 = s_p.appending(path: point_y)
-// 
-//     expectEqual(s_p_x, s_p_x_2)
-//     expectEqual(s_p_x_2, s_p_x)
-//     expectEqual(s_p_x_2.hashValue, s_p_x.hashValue)
-//     expectEqual(s_p_y, s_p_y_2)
-//     expectEqual(s_p_y_2, s_p_y)
-//     expectEqual(s_p_y_2.hashValue, s_p_y.hashValue)
-// 
-//     let ca_readOnly = (\ComputedA.readOnly as AnyKeyPath) as! KeyPath<ComputedA, ComputedB>
-//     let ca_nonmutating = (\ComputedA.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, ComputedB>
-//     let ca_reabstracted = (\ComputedA.reabstracted as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, () -> ()>
-// 
-//     let cb_readOnly = (\ComputedB.readOnly as AnyKeyPath) as! KeyPath<ComputedB, ComputedA>
-//     let cb_mutating = (\ComputedB.mutating as AnyKeyPath) as! WritableKeyPath<ComputedB, ComputedA>
-//     let cb_nonmutating = (\ComputedB.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedB, ComputedA>
-//     let cb_reabstracted = (\ComputedB.reabstracted as AnyKeyPath) as! WritableKeyPath<ComputedB, () -> ()>
-//   
-//     let ca_readOnly_mutating = (\ComputedA.readOnly.mutating as AnyKeyPath) as! KeyPath<ComputedA, ComputedA>
-//     let cb_mutating_readOnly = (\ComputedB.mutating.readOnly as AnyKeyPath) as! KeyPath<ComputedB, ComputedB>
-//     let ca_readOnly_nonmutating = (\ComputedA.readOnly.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, ComputedA>
-//     let cb_readOnly_reabstracted = (\ComputedB.readOnly.reabstracted as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedB, () -> ()>
-// 
-//     let ca_readOnly_mutating2 = ca_readOnly.appending(path: cb_mutating)
-//     expectEqual(ca_readOnly_mutating, ca_readOnly_mutating2)
-//     expectEqual(ca_readOnly_mutating2, ca_readOnly_mutating)
-//     expectEqual(ca_readOnly_mutating.hashValue, ca_readOnly_mutating2.hashValue)
-// 
-//     let cb_mutating_readOnly2 = cb_mutating.appending(path: ca_readOnly)
-//     expectEqual(cb_mutating_readOnly, cb_mutating_readOnly2)
-//     expectEqual(cb_mutating_readOnly2, cb_mutating_readOnly)
-//     expectEqual(cb_mutating_readOnly.hashValue, cb_mutating_readOnly2.hashValue)
-// 
-//     let ca_readOnly_nonmutating2 = ca_readOnly.appending(path: cb_nonmutating)
-//     expectEqual(ca_readOnly_nonmutating, ca_readOnly_nonmutating2)
-//     expectEqual(ca_readOnly_nonmutating2, ca_readOnly_nonmutating)
-//     expectEqual(ca_readOnly_nonmutating.hashValue,
-//                 ca_readOnly_nonmutating2.hashValue)
-// 
-//     let cb_readOnly_reabstracted2 = cb_readOnly.appending(path: ca_reabstracted)
-//     expectEqual(cb_readOnly_reabstracted,
-//                 cb_readOnly_reabstracted2)
-//     expectEqual(cb_readOnly_reabstracted2,
-//                 cb_readOnly_reabstracted)
-//     expectEqual(cb_readOnly_reabstracted2.hashValue,
-//                 cb_readOnly_reabstracted.hashValue)
-//   }
+    // let s_x = (\S<Int>.x as AnyKeyPath) as! WritableKeyPath<S<Int>, Int>
+    // let s_y = (\S<Int>.y as AnyKeyPath) as! WritableKeyPath<S<Int>, LifetimeTracked?>
+    // let s_z = (\S<Int>.z as AnyKeyPath) as! WritableKeyPath<S<Int>, Int>
+    // let s_p = (\S<Int>.p as AnyKeyPath) as! WritableKeyPath<S<Int>, Point>
+    // let s_p_x = (\S<Int>.p.x as AnyKeyPath) as! WritableKeyPath<S<Int>, Double>
+    // let s_p_y = (\S<Int>.p.y as AnyKeyPath) as! WritableKeyPath<S<Int>, Double>
+    // let s_c = (\S<Int>.c as AnyKeyPath) as! WritableKeyPath<S<Int>, C<Int>>
+    // let s_c_x = (\S<Int>.c.x as AnyKeyPath) as! ReferenceWritableKeyPath<S<Int>, Int>
+
+    // let t_0s = (\Tuple<Int, Int>.0 as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, S<Int>>
+    // let t_1c = (\Tuple<Int, Int>.1 as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, C<Int>>
+    // let t_0s_x = (\Tuple<Int, Int>.0.x as AnyKeyPath) as! WritableKeyPath<Tuple<Int, Int>, Int>
+    // let t_0s_p_hypotenuse = (\Tuple<Int, Int>.0.p.hypotenuse as AnyKeyPath) as! KeyPath<Tuple<Int, Int>, Double>
+    // let t_1c_x = (\Tuple<Int, Int>.1.x as AnyKeyPath) as! ReferenceWritableKeyPath<Tuple<Int, Int>, Int>
+    // let t_1c_immutable = (\Tuple<Int, Int>.1.immutable as AnyKeyPath) as! KeyPath<Tuple<Int, Int>, String>
+
+    // let c_x = (\C<Int>.x as AnyKeyPath) as! ReferenceWritableKeyPath<C<Int>, Int>
+    // let s_c_x_2 = s_c.appending(path: c_x)
+
+    // expectEqual(s_c_x, s_c_x_2)
+    // expectEqual(s_c_x_2, s_c_x)
+    // expectEqual(s_c_x.hashValue, s_c_x_2.hashValue)
+
+    // let t_1c_x_2 = t_1c.appending(path: c_x)
+
+    // expectEqual(t_1c_x, t_1c_x_2)
+    // expectEqual(t_1c_x_2, t_1c_x)
+    // expectEqual(t_1c_x.hashValue, t_1c_x_2.hashValue)
+
+    // let point_x = (\Point.x as AnyKeyPath) as! WritableKeyPath<Point, Double>
+    // let point_y = (\Point.y as AnyKeyPath) as! WritableKeyPath<Point, Double>
+
+    // let s_p_x_2 = s_p.appending(path: point_x)
+    // let s_p_y_2 = s_p.appending(path: point_y)
+
+    // expectEqual(s_p_x, s_p_x_2)
+    // expectEqual(s_p_x_2, s_p_x)
+    // expectEqual(s_p_x_2.hashValue, s_p_x.hashValue)
+    // expectEqual(s_p_y, s_p_y_2)
+    // expectEqual(s_p_y_2, s_p_y)
+    // expectEqual(s_p_y_2.hashValue, s_p_y.hashValue)
+
+    // let ca_readOnly = (\ComputedA.readOnly as AnyKeyPath) as! KeyPath<ComputedA, ComputedB>
+    let ca_readOnly = \ComputedA.readOnly
+    // let ca_nonmutating = (\ComputedA.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, ComputedB>
+    // let ca_reabstracted = (\ComputedA.reabstracted as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, () -> ()>
+
+    // let cb_readOnly = (\ComputedB.readOnly as AnyKeyPath) as! KeyPath<ComputedB, ComputedA>
+    // let cb_mutating = (\ComputedB.mutating as AnyKeyPath) as! WritableKeyPath<ComputedB, ComputedA>
+    let cb_mutating = \ComputedB.mutating
+    // let cb_nonmutating = (\ComputedB.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedB, ComputedA>
+    // let cb_reabstracted = (\ComputedB.reabstracted as AnyKeyPath) as! WritableKeyPath<ComputedB, () -> ()>
+  
+    // let ca_readOnly_mutating = (\ComputedA.readOnly.mutating as AnyKeyPath) as! KeyPath<ComputedA, ComputedA>
+    let ca_readOnly_mutating = \ComputedA.readOnly.mutating
+    // let cb_mutating_readOnly = (\ComputedB.mutating.readOnly as AnyKeyPath) as! KeyPath<ComputedB, ComputedB>
+    // let ca_readOnly_nonmutating = (\ComputedA.readOnly.nonmutating as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedA, ComputedA>
+    // let cb_readOnly_reabstracted = (\ComputedB.readOnly.reabstracted as AnyKeyPath) as! ReferenceWritableKeyPath<ComputedB, () -> ()>
+
+    let ca_readOnly_mutating2 = ca_readOnly.appending(path: cb_mutating)
+    expectEqual(ca_readOnly_mutating, ca_readOnly_mutating2)
+    // expectEqual(ca_readOnly_mutating2, ca_readOnly_mutating)
+    // expectEqual(ca_readOnly_mutating.hashValue, ca_readOnly_mutating2.hashValue)
+
+    // let cb_mutating_readOnly2 = cb_mutating.appending(path: ca_readOnly)
+    // expectEqual(cb_mutating_readOnly, cb_mutating_readOnly2)
+    // expectEqual(cb_mutating_readOnly2, cb_mutating_readOnly)
+    // expectEqual(cb_mutating_readOnly.hashValue, cb_mutating_readOnly2.hashValue)
+
+    // let ca_readOnly_nonmutating2 = ca_readOnly.appending(path: cb_nonmutating)
+    // expectEqual(ca_readOnly_nonmutating, ca_readOnly_nonmutating2)
+    // expectEqual(ca_readOnly_nonmutating2, ca_readOnly_nonmutating)
+    // expectEqual(ca_readOnly_nonmutating.hashValue,
+    //             ca_readOnly_nonmutating2.hashValue)
+
+    // let cb_readOnly_reabstracted2 = cb_readOnly.appending(path: ca_reabstracted)
+    // expectEqual(cb_readOnly_reabstracted,
+    //             cb_readOnly_reabstracted2)
+    // expectEqual(cb_readOnly_reabstracted2,
+    //             cb_readOnly_reabstracted)
+    // expectEqual(cb_readOnly_reabstracted2.hashValue,
+    //             cb_readOnly_reabstracted.hashValue)
+//  }
 // }
 // 
 // keyPath.test("key path generic instantiation") {
@@ -453,13 +456,13 @@ typealias Tuple<T: Equatable, U> = (S<T>, C<U>)
 //   expectEqual(optional2[keyPath: optional2_optional]!.origin!.y, 4)
 // }
 
-func makeKeyPathInGenericContext<T>(of: T.Type)
-    -> ReferenceWritableKeyPath<C<T>, T> {
-  return \C<T>.computed
-}
+// func makeKeyPathInGenericContext<T>(of: T.Type)
+//     -> ReferenceWritableKeyPath<C<T>, T> {
+//   return \C<T>.computed
+// }
 
 // keyPath.test("computed generic key paths") {
-  let path = makeKeyPathInGenericContext(of: LifetimeTracked.self)
+  // let path = makeKeyPathInGenericContext(of: LifetimeTracked.self)
   // let z = LifetimeTracked(456)
   // let c = C(x: 42, y: LifetimeTracked(123), z: z)
 
@@ -475,9 +478,9 @@ func makeKeyPathInGenericContext<T>(of: T.Type)
   // expectEqual(path, path2)
   // expectEqual(path.hashValue, path2.hashValue)
 
-  let pathNonGeneric = \C<LifetimeTracked>.computed
-  expectEqual(path, pathNonGeneric)
-  expectEqual(path.hashValue, pathNonGeneric.hashValue)
+  // let pathNonGeneric = \C<LifetimeTracked>.computed
+  // expectEqual(path, pathNonGeneric)
+  // expectEqual(path.hashValue, pathNonGeneric.hashValue)
 
   // let valuePath = path.appending(path: \LifetimeTracked.value)
 
