@@ -2708,7 +2708,7 @@ static SILFunction *getOrCreateKeyPathGetter(SILGenModule &SGM,
                                                  ->getCanonicalType(),
                       ParameterConvention::Direct_Unowned});
 
-  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+  if (!genericEnv && C.LangOpts.Target.isOSBinFormatWasm()) {
     // hack
     params.push_back({loweredBaseTy, paramConvention});
   }
@@ -2762,7 +2762,7 @@ static SILFunction *getOrCreateKeyPathGetter(SILGenModule &SGM,
     indexPtrArg = entry->createFunctionArgument(indexArgTy);
   }
 
-  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+  if (!genericEnv && C.LangOpts.Target.isOSBinFormatWasm()) {
     auto dummyArgTy = params[2].getSILStorageType(SGM.M, signature);
     entry->createFunctionArgument(dummyArgTy);
   }
@@ -2826,7 +2826,7 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
   auto genericSig =
       genericEnv ? genericEnv->getGenericSignature().getCanonicalSignature()
                  : nullptr;
-  if (genericSig && genericSig->areAllParamsConcrete()) {
+  if (genericEnv && genericSig->areAllParamsConcrete()) {
     genericSig = nullptr;
     genericEnv = nullptr;
   }
@@ -2860,7 +2860,7 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
                                                  ->getCanonicalType(),
                       ParameterConvention::Direct_Unowned});
 
-  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+  if (!genericEnv && C.LangOpts.Target.isOSBinFormatWasm()) {
     // hack
     params.push_back({loweredBaseTy, paramConvention});
   }
@@ -2914,7 +2914,7 @@ static SILFunction *getOrCreateKeyPathSetter(SILGenModule &SGM,
     indexPtrArg = entry->createFunctionArgument(indexArgTy);
   }
 
-  if (!genericSig && C.LangOpts.Target.isOSBinFormatWasm()) {
+  if (!genericEnv && C.LangOpts.Target.isOSBinFormatWasm()) {
     auto dummyArgTy = params[3].getSILStorageType(SGM.M, signature);
     entry->createFunctionArgument(dummyArgTy);
   }
@@ -2999,7 +2999,7 @@ getOrCreateKeyPathEqualsAndHash(SILGenModule &SGM,
       genericEnv ? genericEnv->getGenericSignature().getCanonicalSignature()
                  : nullptr;
 
-  if (genericSig && genericSig->areAllParamsConcrete()) {
+  if (genericEnv && genericSig->areAllParamsConcrete()) {
     genericSig = nullptr;
     genericEnv = nullptr;
   }
