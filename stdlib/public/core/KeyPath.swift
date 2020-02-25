@@ -103,17 +103,7 @@ public class AnyKeyPath: Hashable, _AppendKeyPath {
 
         while true {
           let (aComponent, aType) = aBuffer.next()
-          print("aType: ", aType)
           let (bComponent, bType) = bBuffer.next()
-          print("bType: ", bType)
-          print("endOfReferencePrefix ==: ",
-                aComponent.header.endOfReferencePrefix == bComponent.header.endOfReferencePrefix)
-          print("Component.value ==: ", aComponent.value == bComponent.value)
-          print("aComponent.value: ", aComponent.value)
-          print("aComponent: ", aComponent)
-          print("bComponent.value: ", bComponent.value)
-          print("bComponent: ", bComponent)
-          print("type ==: ", aType == bType)
         
           if aComponent.header.endOfReferencePrefix
               != bComponent.header.endOfReferencePrefix
@@ -1337,7 +1327,6 @@ internal struct RawKeyPathComponent {
     newHeader.endOfReferencePrefix = endOfReferencePrefix
 
     var componentSize = MemoryLayout<Header>.size
-    print("Cloning component: \(self)")
     buffer.storeBytes(of: newHeader, as: Header.self)
     switch header.kind {
     case .struct,
@@ -1354,7 +1343,6 @@ internal struct RawKeyPathComponent {
       break
     case .computed:
       // Fields are pointer-aligned after the header
-      print("Cloning _computedIDValue: \(_computedIDValue)")
       componentSize += Header.pointerAlignmentSkew
       buffer.storeBytes(of: _computedIDValue,
                         toByteOffset: componentSize,
@@ -2126,8 +2114,6 @@ internal func _appendingKeyPaths<
     var rootBuffer = $0
     return leaf.withBuffer {
       var leafBuffer = $0
-      print("Cloning rootBuffer:", rootBuffer)
-      print("Cloning leafBuffer:", leafBuffer)
 
       // If either operand is the identity key path, then we should return
       // the other operand back untouched.
@@ -2592,8 +2578,6 @@ internal func _loadRelativeAddress<T>(at: UnsafeRawPointer,
 internal func _walkKeyPathPattern<W: KeyPathPatternVisitor>(
                                   _ pattern: UnsafeRawPointer,
                                   walker: inout W) {
-  print("Start of _walkKeyPathPattern")
-  defer { print("End of _walkKeyPathPattern") }
   // Visit the header.
   let genericEnvironment = _loadRelativeAddress(at: pattern,
                                                 as: UnsafeRawPointer.self)
@@ -3466,8 +3450,6 @@ internal func _instantiateKeyPathBuffer(
   _ rootType: Any.Type,
   _ arguments: UnsafeRawPointer
 ) {
-  print("Start of _instantiateKeyPathBuffer")
-  defer { print("End of _instantiateKeyPathBuffer") }
   let destHeaderPtr = origDestData.baseAddress.unsafelyUnwrapped
   var destData = UnsafeMutableRawBufferPointer(
     start: destHeaderPtr.advanced(by: MemoryLayout<Int>.size),
