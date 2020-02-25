@@ -3297,7 +3297,7 @@ internal struct InstantiateKeyPathBuffer: KeyPathPatternVisitor {
       for i in externalArgs.indices {
         let base = externalArgs.baseAddress.unsafelyUnwrapped + i
         let offset = base.pointee
-        let metadataRef = UnsafeRawPointer(base) + Int(offset)
+        let metadataRef = _resolveRelativeAddress(UnsafeRawPointer(base), offset)
         let result = _resolveKeyPathGenericArgReference(
                        metadataRef,
                        genericEnvironment: genericEnvironment,
