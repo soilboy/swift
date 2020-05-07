@@ -12,9 +12,18 @@ jobs:
           CURRENT_HEAD=$(git rev-parse HEAD)
           git remote add apple https://github.com/apple/swift.git
           git fetch
+
+          # pull master
           git checkout -b master --track origin/master
           git pull apple master
           git push origin master
+
+          # pull 5.3 release branch
+          git checkout -b release/5.3 --track origin/release/5.3
+          git pull apple release/5.3
+          git push origin release/5.3
+          
+          # create upstream PRs, but checkout the original branch with the script first
           git checkout $CURRENT_HEAD
           ./utils/webassembly/create-upstream-pr.sh
         env:
