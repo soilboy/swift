@@ -9,8 +9,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Push master from upstream
         run: |
+          CURRENT_HEAD=$(git rev-parse HEAD)
           git remote add apple https://github.com/apple/swift.git
           git fetch
           git checkout -b master --track origin/master
           git pull apple master
           git push origin master
+          git checkout $CURRENT_HEAD
+          ./utils/webassembly/create-upstream-pr.sh
